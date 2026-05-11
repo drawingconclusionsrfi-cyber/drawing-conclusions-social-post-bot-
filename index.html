@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Drawing Conclusions LLC — Smart Social Bot</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0b0b0d;--surface:#111114;--surface2:#17171b;--surface3:#1e1e23;
+  --orange:#e8621a;--orange2:#f07830;--oglow:rgba(232,98,26,0.13);
+  --green:#22c55e;--gdim:rgba(34,197,94,0.12);
+  --blue:#4285f4;--bdim:rgba(66,133,244,0.12);
+  --border:rgba(232,98,26,0.16);--border2:rgba(255,255,255,0.07);
+  --text:#f0ece6;--text2:#9a9490;--text3:#5a5652;
+  --fh:'Syne',sans-serif;--fb:'DM Sans',sans-serif;
+}
+body{font-family:var(--fb);background:var(--bg);color:var(--text);min-height:100vh}
+.shell{display:grid;grid-template-columns:245px 1fr;min-height:100vh}
+
+/* SIDEBAR */
+.sidebar{background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+.brand{padding:20px 18px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:11px}
+.brand img{width:42px;height:42px;border-radius:8px;object-fit:cover;border:1px solid var(--border)}
+.brand-name{font-family:var(--fh);font-size:12px;font-weight:700;color:var(--orange);line-height:1.2}
+.brand-sub{font-size:9px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-top:2px}
+.nav{flex:1;padding:12px 0}
+.ng{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);padding:10px 18px 4px;font-family:var(--fh)}
+.nb{width:100%;display:flex;align-items:center;gap:9px;padding:9px 18px;cursor:pointer;font-size:13px;color:var(--text2);background:none;border:none;border-left:2px solid transparent;transition:all 0.15s;text-align:left;font-family:var(--fb)}
+.nb:hover{color:var(--orange2);background:var(--oglow)}
+.nb.active{color:var(--orange);background:var(--oglow);border-left-color:var(--orange);font-weight:500}
+.nb i{font-size:15px;flex-shrink:0}
+.sidebar-bottom{padding:14px 16px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:8px}
+.sbot-btn{display:flex;align-items:center;gap:8px;width:100%;padding:9px 12px;border-radius:8px;color:#fff;font-size:12px;cursor:pointer;font-family:var(--fb);transition:all 0.15s;border:none;font-weight:600}
+.gemini-btn{background:linear-gradient(135deg,#4285f4,#34a853,#fbbc04,#ea4335);background-size:200%;animation:gbg 4s ease infinite}
+@keyframes gbg{0%{background-position:0%}50%{background-position:100%}100%{background-position:0%}}
+.gemini-btn:hover{opacity:0.9}
+.buffer-btn-s{background:rgba(23,213,130,0.15);border:1px solid rgba(23,213,130,0.3)!important;color:#17d582!important;text-decoration:none;display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:8px;font-size:12px;font-family:var(--fb);font-weight:600;transition:all 0.15s}
+.buffer-btn-s:hover{background:rgba(23,213,130,0.25)}
+
+/* MAIN */
+.main{display:flex;flex-direction:column;min-height:100vh}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:13px 26px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:20}
+.topbar-title{font-family:var(--fh);font-size:15px;font-weight:700}
+.page{display:none;flex:1;padding:26px}
+.page.active{display:block}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 15px;border-radius:8px;font-size:13px;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--orange);transition:all 0.15s;font-family:var(--fb);white-space:nowrap;text-decoration:none}
+.btn:hover{background:var(--oglow);border-color:var(--orange)}
+.btn:disabled{opacity:0.4;cursor:not-allowed}
+.btn-primary{background:var(--orange);color:#fff;border-color:var(--orange);font-weight:600}
+.btn-primary:hover{background:var(--orange2)}
+.btn-sm{padding:6px 11px;font-size:12px}
+.btn-ghost{border-color:var(--border2);color:var(--text2)}
+.btn-ghost:hover{color:var(--text);background:var(--surface3)}
+.btn-gemini{background:linear-gradient(135deg,#4285f4,#34a853);color:#fff;border:none;font-weight:700}
+.btn-gemini:hover{opacity:0.88;background:linear-gradient(135deg,#4285f4,#34a853)}
+.btn-buffer{background:rgba(23,213,130,0.15);border-color:rgba(23,213,130,0.35);color:#17d582;font-weight:600}
+.btn-buffer:hover{background:rgba(23,213,130,0.25)}
+
+/* CARDS */
+.card{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px}
+.card-title{font-family:var(--fh);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:13px;display:flex;align-items:center;gap:6px}
+
+/* FORMS */
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:13px}
+.fl{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--text3);font-family:var(--fh)}
+.fi{background:var(--surface3);border:1px solid var(--border2);border-radius:7px;padding:8px 12px;color:var(--text);font-size:13px;font-family:var(--fb);outline:none;transition:border 0.15s;width:100%}
+.fi:focus{border-color:var(--orange)}
+textarea.fi{resize:vertical;min-height:72px;line-height:1.6}
+select.fi{cursor:pointer}
+.fr2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fr3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+
+/* DROP ZONE */
+.drop-zone{border:2px dashed rgba(232,98,26,0.28);border-radius:12px;padding:40px 20px;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--surface2);position:relative;overflow:hidden}
+.drop-zone:hover,.drop-zone.over{border-color:var(--orange);background:var(--oglow)}
+.drop-icon{font-size:40px;color:var(--orange);display:block;margin-bottom:10px}
+.drop-text{font-size:15px;font-weight:600;font-family:var(--fh);margin-bottom:5px}
+.drop-sub{font-size:12px;color:var(--text3);line-height:1.5}
+.preview-wrap{position:relative}
+.preview-img{width:100%;border-radius:10px;object-fit:cover;max-height:280px;display:block}
+.preview-clear{position:absolute;top:10px;right:10px;background:rgba(0,0,0,0.78);border:1px solid var(--border2);color:var(--text);border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer;display:flex;align-items:center;gap:4px;font-family:var(--fb)}
+
+/* SCAN BOX */
+.scan-box{border-radius:10px;padding:13px 15px;margin-top:12px;border:1px solid;display:none}
+.scan-merch{background:rgba(232,98,26,0.1);border-color:var(--border);color:var(--orange2)}
+.scan-personal{background:var(--gdim);border-color:rgba(34,197,94,0.25);color:#4ade80}
+.scan-label{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;font-family:var(--fh);font-weight:700;margin-bottom:5px}
+
+/* PRICE BOX */
+.price-box{background:rgba(232,98,26,0.07);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:14px}
+.price-main{font-family:var(--fh);font-size:34px;font-weight:800;color:var(--orange);line-height:1;margin-bottom:5px}
+.price-range{font-size:13px;color:var(--text2);margin-bottom:10px}
+.price-why{font-size:12px;color:var(--text3);line-height:1.6;border-top:1px solid var(--border2);padding-top:10px}
+.psource{padding:2px 8px;border-radius:3px;font-size:10px;background:var(--oglow);color:var(--orange2);border:1px solid var(--border);display:inline-block;margin:2px}
+
+/* PIPELINE */
+.pipeline{display:flex;align-items:center;margin-bottom:22px;overflow-x:auto;padding-bottom:4px;gap:0}
+.pip-node{display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 14px;border-radius:10px;background:var(--surface2);border:1px solid var(--border2);min-width:88px;transition:all 0.25s}
+.pip-node.active{border-color:var(--orange);background:var(--oglow)}
+.pip-node.done{border-color:rgba(34,197,94,0.4);background:var(--gdim)}
+.pip-node i{font-size:19px;color:var(--text3);transition:color 0.25s}
+.pip-node.active i{color:var(--orange)}
+.pip-node.done i{color:var(--green)}
+.pip-label{font-size:10px;color:var(--text3);text-align:center;line-height:1.3;transition:color 0.25s}
+.pip-node.active .pip-label{color:var(--orange2)}
+.pip-node.done .pip-label{color:rgba(34,197,94,0.8)}
+.pip-arrow{color:var(--text3);font-size:18px;padding:0 5px;flex-shrink:0}
+
+/* LOADING */
+.loading-step{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border2);font-size:13px;color:var(--text2)}
+.loading-step:last-child{border-bottom:none}
+.ls-icon{width:24px;height:24px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
+/* POST CARDS */
+.post-card{background:var(--surface2);border:1px solid var(--border);border-radius:11px;overflow:hidden;margin-bottom:12px}
+.post-head{display:flex;align-items:center;justify-content:space-between;padding:11px 15px;border-bottom:1px solid var(--border2);background:var(--surface)}
+.post-plat{display:flex;align-items:center;gap:8px;font-family:var(--fh);font-size:13px;font-weight:700}
+.post-body{padding:14px 16px}
+.post-text{font-size:13px;color:var(--text);line-height:1.7;white-space:pre-wrap}
+.post-edit{width:100%;background:var(--surface3);border:1px solid var(--border);border-radius:7px;padding:10px 12px;color:var(--text);font-size:13px;font-family:var(--fb);line-height:1.7;resize:vertical;outline:none;display:none}
+.post-edit:focus{border-color:var(--orange)}
+.char-ct{font-size:11px;color:var(--text3)}
+.char-over{color:#ef4444}
+
+/* BUFFER HANDOFF */
+.buffer-handoff{background:rgba(23,213,130,0.06);border:1px solid rgba(23,213,130,0.22);border-radius:12px;padding:18px;margin-top:8px}
+.bh-title{font-family:var(--fh);font-size:14px;font-weight:700;color:#17d582;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.bh-desc{font-size:12px;color:rgba(23,213,130,0.65);margin-bottom:14px;line-height:1.5}
+.bh-step{display:flex;align-items:flex-start;gap:10px;font-size:12px;color:var(--text2);margin-bottom:8px;line-height:1.5}
+.bh-num{width:20px;height:20px;border-radius:50%;background:rgba(23,213,130,0.18);border:1px solid rgba(23,213,130,0.3);color:#17d582;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.bh-plat-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 13px;background:var(--surface3);border:1px solid var(--border2);border-radius:8px;color:var(--text2);font-size:12px;cursor:pointer;font-family:var(--fb);transition:all 0.15s;margin:3px}
+.bh-plat-btn:hover{border-color:rgba(23,213,130,0.4);color:#17d582;background:rgba(23,213,130,0.08)}
+.bh-plat-btn.copied{border-color:rgba(23,213,130,0.5);color:#17d582;background:rgba(23,213,130,0.1)}
+
+/* ALERTS */
+.alert{padding:12px 15px;border-radius:9px;font-size:13px;display:flex;align-items:flex-start;gap:9px;margin-bottom:14px;line-height:1.5}
+.a-gemini{background:var(--bdim);border:1px solid rgba(66,133,244,0.25);color:#82b0ff}
+.a-tip{background:var(--surface3);border:1px solid var(--border2);color:var(--text2)}
+.a-green{background:var(--gdim);border:1px solid rgba(34,197,94,0.25);color:#4ade80}
+.a-orange{background:var(--oglow);border:1px solid var(--border);color:var(--orange2)}
+
+/* MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-bg.open{display:flex}
+.modal{background:#121215;border:1px solid var(--border);border-radius:14px;padding:28px;max-width:500px;width:100%;max-height:90vh;overflow-y:auto}
+.modal-title{font-family:var(--fh);font-size:20px;font-weight:800;margin-bottom:5px}
+.modal-sub{font-size:13px;color:var(--text3);margin-bottom:20px;line-height:1.6}
+.key-step{display:flex;gap:12px;margin-bottom:14px;align-items:flex-start}
+.key-step-num{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#4285f4,#34a853);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.key-step-body{flex:1}
+.key-step-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px}
+.key-step-desc{font-size:12px;color:var(--text3);line-height:1.5}
+.key-step-desc a{color:#82b0ff;text-decoration:none}
+.key-input{background:var(--surface3);border:1px solid var(--border2);border-radius:7px;padding:9px 12px;color:var(--text);font-size:12px;font-family:monospace;width:100%;outline:none;transition:border 0.15s;margin-top:8px}
+.key-input:focus{border-color:#4285f4}
+
+/* HISTORY */
+.hist-item{background:var(--surface2);border:1px solid var(--border2);border-radius:10px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:flex-start;gap:12px}
+.hist-thumb{width:50px;height:50px;border-radius:7px;object-fit:cover;flex-shrink:0}
+.hist-thumb-none{width:50px;height:50px;border-radius:7px;background:var(--surface3);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+
+/* PLAT TOGGLE */
+.ptog{display:flex;align-items:center;justify-content:space-between;padding:9px 13px;background:var(--surface3);border:1px solid var(--border2);border-radius:8px;cursor:pointer;transition:all 0.15s;margin-bottom:7px}
+.ptog.on{border-color:var(--orange);background:var(--oglow)}
+.ptog-left{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--text)}
+.ptog-check{width:18px;height:18px;border-radius:4px;border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;transition:all 0.15s;flex-shrink:0}
+.ptog.on .ptog-check{background:var(--orange);border-color:var(--orange)}
+
+/* SPINNER */
+.spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(66,133,244,0.2);border-top-color:#4285f4;border-radius:50%;animation:sp 0.7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.spin-lg{width:22px;height:22px;border-width:3px}
+.spin-orange{border-color:rgba(232,98,26,0.2);border-top-color:var(--orange)}
+
+/* NOTIF */
+#_notif{position:fixed;bottom:20px;right:20px;padding:12px 18px;border-radius:10px;font-size:13px;z-index:9999;opacity:0;transition:opacity 0.3s;pointer-events:none;max-width:320px;font-family:var(--fb)}
+
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(66,133,244,0.25);border-radius:3px}
+</style>
+</head>
+<body>
+
+<!-- GEMINI KEY MODAL -->
+<div class="modal-bg" id="key-modal">
+<div class="modal">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+    <div style="font-size:28px">🤖</div>
+    <div>
+      <div class="modal-title" style="margin-bottom:2px">Connect Google Gemini</div>
+      <div style="font-size:12px;color:#82b0ff">100% Free · Just your Google account</div>
+    </div>
+  </div>
+
+  <div class="alert a-gemini" style="margin-bottom:18px">
+    <i class="ti ti-info-circle" style="font-size:16px;flex-shrink:0;margin-top:1px"></i>
+    <span>Gemini is Google's AI — completely free, no credit card ever. You just need a Google account (Gmail counts!). Getting your key takes about 2 minutes.</span>
+  </div>
+
+  <div class="key-step">
+    <div class="key-step-num">1</div>
+    <div class="key-step-body">
+      <div class="key-step-title">Go to Google AI Studio</div>
+      <div class="key-step-desc">Click the button below — it opens Google's free AI platform. Sign in with your Google/Gmail account.</div>
+      <a href="https://aistudio.google.com/app/apikey" target="_blank" class="btn btn-gemini btn-sm" style="margin-top:8px;text-decoration:none"><i class="ti ti-external-link"></i> Open Google AI Studio (Free)</a>
+    </div>
+  </div>
+
+  <div class="key-step">
+    <div class="key-step-num">2</div>
+    <div class="key-step-body">
+      <div class="key-step-title">Click "Create API Key"</div>
+      <div class="key-step-desc">On that page you'll see a blue button that says <strong style="color:var(--text)">"Create API key"</strong> — click it. It generates your key instantly. No forms, no waiting.</div>
+    </div>
+  </div>
+
+  <div class="key-step">
+    <div class="key-step-num">3</div>
+    <div class="key-step-body">
+      <div class="key-step-title">Copy & paste your key here</div>
+      <div class="key-step-desc">The key starts with <strong style="color:var(--text)">AIza...</strong> — copy it and paste below.</div>
+      <input class="key-input" id="k-gemini" type="password" placeholder="AIzaSy...">
+      <button class="btn btn-ghost btn-sm" style="margin-top:6px" onclick="toggleKeyVis()"><i class="ti ti-eye"></i> Show/Hide</button>
+    </div>
+  </div>
+
+  <div class="key-step">
+    <div class="key-step-num">4</div>
+    <div class="key-step-body">
+      <div class="key-step-title">Your name & brand voice (optional)</div>
+      <div class="key-step-desc">Helps AI write in your style every time.</div>
+      <input class="key-input" id="k-bizname" placeholder="Drawing Conclusions LLC" style="font-family:var(--fb);margin-top:8px">
+      <textarea class="key-input" id="k-voice" rows="2" style="font-family:var(--fb);margin-top:8px;resize:none" placeholder="e.g. Warm and authentic. Mix of hype and storytelling. Always ends merch posts with link in bio CTA."></textarea>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:10px;margin-top:6px">
+    <button class="btn btn-gemini" onclick="saveKey()"><i class="ti ti-check"></i> Save & Start Creating</button>
+    <button class="btn btn-ghost" onclick="closeModal()">Maybe Later</button>
+  </div>
+  <div style="font-size:11px;color:var(--text3);margin-top:12px;line-height:1.5">🔒 Your key is saved only in your browser — it never leaves your device or gets uploaded anywhere.</div>
+</div>
+</div>
+
+<div class="shell">
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="brand">
+    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCADIAMgDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD5hoNFKKAEFLSUCgBaKKKACg5oooAKCaKQ0AFGDSiigAopB1paACg0UGgBAaWkpRQAUtApKACiiigAoNFFACUUGigApTSHrSigBKKKKAAUtGKO1ABmijFFABRiigkDvQAUU0uo6nFSRRTy/wCqt5pP92Mn+QpNpDSb2G0VP9g1EDJ0+7x/1xb/AAqGRXiOJY3j/wB9Sv8AOkpRezG4yW6EoNIGB70vUVRIlGaKKAFopKWgBDRmgijFAAKWkooAKKKKACl9KSlFACdTSik6GloAKKKKACjNITW74Q8L33iG6UIjJbjln6ZH17D3/AAnpnVqwpRc5uyRrQoVK81Tpq7ZjWttc3k3k2sLyv3x0H1PQV3Xh74ZX93sm1OTyUPOzkH/ABP5D611N1ceFfh/ZIjqs19jckMYBkJ9efuj/aPJ9+lefeJfiD4g1hnjhnOn2p/5ZW5IYj/afqfwwK8f61i8b/uy5Y/zP9EfQvA4DLf98lzz/lj09WegnQfA3hwA39zaRSL2kkAY/gMt+tQy+OfANr8kUT3GOhS0LD83ryLTNM1LVrkx6dZXF5KT83loWx9T2/E12Gl/CvxDdKGvZ7OwU/wsxkf8l4/WsK2Cw9LXFV2362/DU6sPmWLraYHCxS9L/jojpx8SPBpO06VchfX7HH/jVmHxZ8Pb8eXKy25b/nrbvGPzHFYz/B/9z8niD97/ALVr8v8A6FmsHV/hl4nsQXtkt9RjH/Pu+H/75bB/LNYQpZZUdqdVp+rX5o6quIzukr1aEZL0T/JnbXHgfwtrkLT6TcwMTzuhcMB9dvT8Qa4jxJ4B1jScywL9pg9QR/Pp+eK5bGoaRf4IurC7jP8AtRuP5Gu58L/FDUbQrb65F/aFv0MygCUD37N+OD712+wx2GXNRn7SPZ7/ACZ5f1nLMa+SvT9lLutvmjg2Do7RyKyOpwysMEH3FLXsWreG/DvjHTDqWiyx78YBjO0qf7pB+6f9k8fTrXk+s6Ze6PetbXsbKQSFbGA2P5H2/pg13YPMKeJvHaS3T3PNzDKquCtJ+9B7SWzKuKKQEYpa7zywzRSGlFACUUGigAooooAKUdKSgGgAozRRQAdqQk0tS2NrLfXsVpADvkbHTOB3P5Um0ldjjFydlubHgnw5ceIdRVApFsh+dj0OOv4ev1A6njuvGXiyz8KWZ0Dw8Ea+UASy4BEJx37F8dB0UflUut30XgLwlBp1gg/te8XbGANxT1b3xnj1Yk1i+EPhpd3zLqHiOSSCNzv+zg/vpM85c/w5/P6V81VxFLES9viHamvhX8z7n2NDC18LH6rg43rSXvS/lT6X6P8ApanEaXpuseI9SdLOGe9uZG3SyscgE93Y8D8a9N8N/DDTLCMXviK6S7ZRlow2yBP95jgt+grvrDT7XT7EWenQQ2kKD5VjTge/ufc1halrHhaymzfXY1K4Q9x5+w/+i0/SuOvm9fFPkoJxj5K7/wCAelhuH8LgV7TFNSl/edo/d1+ZdtdW0i3gFto1rLdRpwI9OtS0Y/4Fwn61J9u1uTm38PeWPW6vkQ/kgasS/wDHLxW/nWmizyW6tt82SQ7FPofLVgPzFRP4l8UtALkaVZW9uekzqzIPq28AfjiuFYKpu4LXu/8AJo9T+06K91VHp/LHT8UzoPP8TDk6VpRHoL98/wDouj+0tVi/4+vDl0R3NrcRzfoSp/SsKXWPGMMbzSxaKsKqr+YzgKQ2duD5vPQ9Kjm8V+I7G3+06holuLfGRId8YYeqjLEj8KFg5y2jF+jf+YPMqUfinNesV/kbGo3HhnW0FjrEUQduFiv4TC4P+yWA5/3TXDeKvhVLEHufDtwZV6/ZZ2w3/AX6H6HH1rq4vGtnNaL/AGrpFzDDIMjcFkRh67WCsR/wE1oaLd6HePt0PUVhccm2UkD/AL9PyP8AgOK1pVcVgtYXS7PWP4bGGIoYHM9KjjJ9Gvdl+O/5eR4Vpmoaz4Y1gyQGayu4jtlikUgMP7rKeo/yK9Vt7jRviN4fkTy1h1GJR5sRPKnsQf7vo3boeMg9R4k8PaV4gtPI1S2V3UYSZPlkjP8Ast/Q5FeT6x4Y8QeBNUj1vTZPtVpA2ROq9F7rKvYHpnp9K9GOLo5haS9ystvPyPGlgMTlF4zXtMO911Xnbo/TR9bHLa1pl1o+oPZXSsCCdrEY3Dp+fYj1qpXrXiy0s/G3hKHXdMQCdR8yE8o44Kn9AT3BU9q8lXKkqwKsDggjkGvcwOL+sU/eVpLRrzPmczwKwlX3HeEtYvuhaKDQK7jzQ+tFL3ooASilxRQAlLig0UAJilxRSEnoAST0AoARuK7X4TWTvqEmoQ2rXlxGdscQO1RjB3Ox4UZIPcnbwDVbwb4Usr9kvdf1a0sbPqIfPUTSfX+4Prz7V6c2veFfDmjrDp01q0KZEdvaurFjjkk5wPdmNeFmePvF0KMXJv7vv/r1Pp8lyr3liq81CK11tf7v8/uL9lodvHqba1qPl3WqMgHmkYSBQPuxg/dHueTyeOlZHiTx5pWlqUtSl3J037sRZ9iOX/4CMe4rzzxh45vtXcwwuEt88Rp/q/xzy59249F71x80kk0hlmkaSQ9WY5JrlwuRyqNTxL+R3Y7ieNFOlgY27yfXz/4c6TxH411XV2KtKxizwjDEY+kY4P8AwItXT/Ci701NPvNT8QXMEsrTrDaLMnmONq5by0AJH3h90dq8yPSuw8H+Jb7wpoovbbRrG4iup3jN05YSBlAPlkjoMHIHfn0r0sbg4rDeyoxtftZfieNluYS+uKviJXtfVpvy2Xqerabr+lI88N3eG3M93K0S3ULwhlY8AFwAfpT7zTo9MuPt9pK1pbn/AFpjHEP+1jo0fqp6dVI5rk9O+Kuk3qG11vSpYYn4YqRPGfqpAOPzrodMurS0+zy6fcw3fhy8YQqN+5bWRuFUE8+W33dp+6SOxwPl6uGrUJPmi436bp+j2v8A15H3FDHYfFRSjNSt1V04+qetu7W34pyJ9m1O9nbTbewMUSPJdkBooh8+XjHcn0wDnrnva03TIY2fVdU+/jeouXBMS/3pGPBf8lXooHJNS0JbWptHuf8Aj209I5nkfo0abjDuPfrk/wDXOq95f6bJbLr3iieOLTXbdp1nIMhl7Ssn8bt1A6KCO+TUyU5Plj1ttq32S9d/T8ahKnFc0uje+iTT1b9NvN/hduvEGjXF9BILs3VmkMqysltJNESSmOQpU9DXmnxOuLe11i0uNBmtW025tw6xwhWiEisQ2F/hPTOMGuh1L4uWsTeXpekzyovCtNKIx/3yua4nxxqlzrv2LWbjSbTT/PEio0Od04UjLNnrgnAP19K9fLMFVpVYucGo7atPz27nz2d5lQxFCUadRSldPSLVtlvroa3hn4iajYMsV3IZYRxsmZpF/BuXX8dw9q9O8P8AibStcVY4X8uZwf3MhB3jvtI4cfTn1Ar53Aqa0u7izYtBJgEgsp5VvqP69R2Nd2MyShX96HuyPNy7iXFYVqNR80ezPf49BTRpLq40G1j8m65urAttRz03RnojYOMH5T7da8V8b2S2OvyFC4E2XZJFKOjZwQynoTwfQ54zXZ+DviM8Sra6n5lwOgDNmQf7rH7/ANGw3oW6V1fiBfBninTozf6hY5K/uZvOWOaP8+R/ukYry8PUxGXV/wB/FtPqtf6/rc9vF0sLnGFX1WSi1ryvS3f7/u9DwpTxQa1/E/h6XRLnMF9aahZsf3c1vIGP0ZQcqf096yAc19VSqxqxUovQ+GrUZ0ZuE1ZoKBQaM1oZC0UmaKAFooooACKQg9QSCOhFLRQB3fgz4kXunmOx1xTeWY+UT4zLGPf++P19zXqRGj+JdCkjR4b2wul2sUPH/wBiw6+oNfODDivRPg88U6z2kF1JZX65KSpyrjqA6Hhx973GOCK+czbLKcY/WKXutdtvX/hj6/Ic6rSmsJWXPF6a7+nn8/vOY8Y+Frzw3qMkDsZ4Mb45QMbo8/e/DofQ47EVgqK9km8RaVrbzeH/ABCE0jWLaYpHK3MYkHAZSezA8q3BBxk1594m8PS2st1JBbeRLa83lmCT5KnpLGerQt69Vzg9jXfgMZOouSsrS/B+aPCzjC08LV9pRd6UnZP+V/yy7eV99t9+bfGK9X8CadbW/h59E1qATWWqWsd+zHjydxKZ9gMJ83YsM8GvJ25BBr3fStXsNTtNC1jTQqwRyf2fdRNgmJZFChW9g6p7EGsc6nONOKS0fXs1qj0OHKVOdaUpNXSWj6puz+SW5wviH4W63aXDNpDJqNufuqWCSr7EHg/UH8KytP0bxdphvbZLOWCFoW+2I7r5aqBnc+D8rDAIPXIGK9bD3cOoSaVZC4ewt1DEROBMP70aMeqrleAQ3zYB4pdWuNPGgS22nrEsAjlmniC7GVY0LHcp5BLbBzycmvMp5tiLKFRKV+tunn5nuVsgwnNKpSk4WvpfrtZaXt53+RzviJNS/wCEJOu/bPMutXighuon4i8uQgIq/wB3bkgnvvbPbHDal4f8aazrMgvNPuJrxRjy2ZVEaDoFGcBPTHFet6zHHB4FtFkTclulmxU+ivHn+tWGls3tIrW+3XF9A7QqIQTOGU4DKRyuRg5JA55rHDZjKhFyhFN3a22Wn4f8A6MXk8MVNRqTaXLF77vW+99Xv95594Y+F8yt9t8T3EVtbRfO1vG+SQP77jhR9MmoPivA9/GdQt7b7LZ6SYbNIdu0gSAvkj+H+DjsGGea9D06Sa71KW11dvkstssSlgd5ABJkIADMm5TwMZbPJGa5Pxnq1lb/AA8nj1Bd1/rkj3McQ+8oZwUY+gVQg9zxWtDF4ipioyn7zukrbJPe3yvdnPi8vwtHBThT91Wbbe7cdr/9vNWSPJBQenNJXbeF/DvkXeLySOG8iQS3UkhATTIj0Zs8Gc/wr/D1PPA+prVo0ouUj4Bc05xpQV5S2X6+SXV9CT4ceCW1e++2akpWytn/AHkRHMjjnyz/ADb04HUnHqniPXdG0G3E2pzRRsRmOJVBkk/3V/r0rm9J8SwalqNv4a8GxeVaxITNeumRHGOpRW+8xJ+83UnODXDfFWSy/twWtqHeSMkzTSPveQ/dBLH6Nx0GRgV8vKjVzDFpV7xVrpdUvPtf7z7uliKWUZe5Ye05Xs5dG/Lul93m3ch8YeONU8QF7aNRY2BPEMZ+Zx/tt3+g4+tcyKaoxTh1r6ejQp0I8lNWR8ZiMTVxM3UqyuxaMUUGtjAaaKDRQA6iiigAooooADWl4S1ZtE16G8UgLna5PQDPB/A/pms2muuaipBVIuMtmaUqkqU1OO6PTfi7oS6jp8PizTk3YjC3aDk7RwG/4CflPtg1yHh/V3lEFndX5tLm3JOnX7nIgJ6xSZzmFuhzkKT0wSK6z4U+KEEbaHqjK0TLhfM5BXGOfUY4Ptg9jWH8SPBkvh+6a+sUaTSZW+U9TAx/gb29D+HXr4uDqexn9TrdPhfddj285wUcxw7xtDZ/Gl0fe3Z9enfRlDVdH+13EwsbNrPU4Mm70ruuBkvB/fTHO0ZIHI3LyMvR9Xu9LFwttIfKuU2SpnhsHKn2KsAQatafqsMkMNnqxn2wY+yXsH+vtMcgDkb0B/hyCP4SOh09Thhnt/tmuJ56SHEet6aA6ufSaM4+b1zsf/er1WtOSauv6/rufI0MTWwk1GXya3+Xf0+L/Fuen6LrdtPp2k6qyXKGd380iBmWRpcltpXIOHVRg4PtWX4i1FtT1bVrcTXFnPBYC3js4irzXLPliGABIUDGQD369q5fwbf3mgWN2hura+0WbDrPDLkW8wIKM6HDoCQAcj0Nd9qlrpFuLSS8sodQkvYsRr5QeSWbG8MvfnJBOcDC5Ir5avh44Wvqr3vb77/5o/TcDmKzTCXpzWlubydra9ez/NMs+Jb+G58K3Mdtb3r+fCEtyts3zscbNvvxWf4c1eODxBqlklxcarEwjuXuMKZoxjYVdAATtK+mRkcHrWVa6dpYmhtk0bV7i5tfKkksn8wpCWz5xwW2cjpgnd26mteT+y4PDl5renfZrO3RtkbJGECxg+WwYDkE7mYg8g7fSud0qcIOnZu/5u1vPp6b7noKvWqVFWulyrXfZJ33suvrtsZXjjXIbTwh9phE/wBpvZZdkhjKqyy53KCcE4TbyAQMCvK9RvNR8Qax50ivPczFY4oolJwBwqIo7AcYrpvGLTa3qSajq17FpGkIgSwhkPmT+SOhWJTnLDBy20dOeKihQWunmeyEmgaTMpR764w19er3WNRjCn0XC/3mNfR4DDxw9NO3vP8AC/T/AIY/Os8z6OJquNJ80Vouza69bvyV33sR6RYDTLlorWW3l1mNS89yzBrfSkHV2bkNKPbIU8DLdMfXNSjuFTT7DzRp8LFlMn+suJD96aT1Y9h/CMD1JZqmqJLbDT9OtzZaajBvKLZeVh0eVv4m9B91ew7nvPhf4NEQTxLrqCKGMeZbQyD8pGHp6Dv19K3xOIhhYe1qb9F3f9fccmT5RXx2ITe/d9F3fT0XTXVttmv4U05PBHgufUr3Eeo3a75M9YxjKr/wEZJ9yBXk1/dPf6hPeSDa0rZx/dHQD8BgV1PxO8TvrGpNZW7EW0RwRnqQen58n3wP4a5BeOKyy3DzinXq/HP8F0R7mcYqnKUcNQ/h09F5vqxcUUUV6h4oUGikNAAOtFAooAWiiigAopKWgAooooARHkilWWF2jkQhlZTggjvXrHgHxnaanZnR9ZWMkoUKuuVZe/Hdfb+H6dPJzSDcjq6MyOpyCpwQfUGuPGYKni4cst+j7HoZdmVXAVOeGqe66M9D8bfDa4ti+oeHFa6tSNxtc5kQf7B/jX26/WuCsL6/0u6aSznltpfuyLjhh/ddTwR7EV2ng/4h3emBbXUgZ4B/Fjp9QOh9x+Xeu3u7Twb41gWedYhcOMLMjhJfpuHDfQ5+gry1jMTgvcxUeaP8y/U9irleBzaLlhJKMnvCW3y/r7jyaLV9JeVby70SOG9iZXSSzbZE5BBIeJgRgjOdpH0r04aLd6Xqt5eWt1rE9kwjWJbORGnt4SuVADqdyDkYUgjHRq5/WPhLfRszaVqcE69o7lTG/wCYyD+lWvD1r440Vha6vol1q2mhBGY4bhGO0EkDOcsoyflOPTpxUYvE0cTFSoVF5p6dtrjyrLK2WzdOvSlZtNNXklo10vp+XY3l1LTpECw+K/E88hxsijiJdiegAMQGT9ayNY0y5tbbWNc1OW88hbIS/Y7iZXZ5clY2l2AKWB5AGcYGSa6SbXEnN3ENC1e7LwxqbI2ZVhjdwxbCgcjBBPtXF67ofxA8RyyQyWTWVi7KRDPdJkhRhd5HLEfTv6815+FVpe81BaXu1e2j0tb8vme3j/eh7idR62UVK19Vd3b+6/qjj11nTdObOh6Oiy4/4+9QIuJQfVVwI1P4Mfes4nUta1MZNzqF9McDrI7f/W/QV6Ro3wlCkS61qoKLy0dquB+Lt0/Kt+XU/CPguxaPTordXIwShyzn3fkt9Bn8K9iebUr8uGi5y/D7z5fCcKyo/vcU1TXdu8v1+78DH8FfD620pF1jxM0TSx4ZLYnMcZ7Fv7zeijjPrWX8RvHTXjPp2luUjU4ZweQf/iv5fXpheLvGmpa7KUR3gt+QFHBx7Y6fqT3PauZVcCqw2AqVKnt8U7y6LojXGZpRpUnhcCuWHV9ZCquBTgKAOKWvZPngooooAKQ0tIaAAUUUUALRRRQAUUmaUUAFFGaKAClRHkkWONGd3IVVUZJJ6ACkrQ8Lf8jTpX/X7F/6GKipLkg5di6UOeaj3ZWvdO1CzjEl5YXduhOA0sLKCfqRUml2WuEfa9Ms9QZT/wAtIIXKnHuBg16XIuuw654ll8QG6Xw0Y7gBbs/u3z/qxGD3z0xVDw0IZPBHhu1n12/0hp7+dI5Lfo7bhwxyMD068mvJeYydO9k9trtapv71bU9yOUwVW3M1o97J6SS6u1nfR+RgaT498Rac4haQybTt8tgVOfTGCM/hXUQ/EvU470WN7osy3RYL5Jh+fJ6DGQefpVCKCPVfipqeranbf2fZ6WfPuRPxgoAqFiP7zANxVb4ghrux0zxZZ39te3UEgtrue1zsEqnfGeQCOOPyrnnTwtapGMqau1v2bV0rr+tUdlKvjcPRnOFZ2i3Zd4p2bs9f+GZ0Q+Jrv56Jo1yzW6lpl8lj5YHBLDd8vPrWfc/EzV5YEmtNHl8mWTyo5PLwrP8A3QfmyfatSa90nTLuHVSqNF4tmiEqkfchMeJP/H2Fc14jRdJ8QeGfCcEhkTTJo3mP96aSQEn/AL5x+dc1DD4WUrKl56+S1+56HZicXjoQu6/W2iXVrl++OvyMnW/FHiy/+0+ctxFHbnE48tm8knjDZ4X8hXNTxXjRLfXCTtHKxVZ5ASHI6gMeuK9StNQXSdQ8fX0tst1El7GssL9HRnZWX8iap+IbTRrLRPCgS5+0aJJqkkwZh0iYqSre45B+lehQxcabUI07Ly/w833nk4nASrRdSdW7V9/8fKn6b37fM4AaXqa2Qvjp14LXGfO8htmPXOMYqFeles3On61f+INaj1K71q306VHNtPayqLP7PtJCnPHPA4968jU/KK7cHivrF720tt5nnY/BfVWrXs7rXTb9CSigUV2nnhRRRQAUmaWjrQAnFFFFAC0ZooxQAlKoZ3VFGWY4A9SaSgEghlOCDkEdjQB1+qaL4T0a4bSNU1DVG1OOMGaa3iUwxSFchNp5btzVez0fQrDQ7HU/EVxfs+obmt7ezC5WMHG9i3v2FSX/AIl0HVJP7R1Xw7JPqvlhJGS6KQTMBgOygZz9DVew17S59EtNL8Q6VcXi2Rb7LNbz+W6oxyUbI5XNeSo4jkXNzX67dn8Ple3y+Z7cpYX2j5eW1ny6S7r4vO1++vyNGy8HWMni+1099Qlk0q9smvba5UBXKBSfmB4BBBzVK88KyaZp+u3F5NKtxppge1eIjZMkjcOD1xjkYPWnw+MMeJ01RtPEdrBZPZW1rE/EUZUqOT15OTUEXiudvA1x4ZvITOW2LBPu5RAwbYe5HHHpmhRxt1fb3b7d9fw0f4DcsvcZWWvvW37Ky+/Vdra7l/UNL0HTEtLHxPq2tTahPCs7+QQ8dsHGVBDcscdcVjXemRx+CrXVku7ly+oy26Rs2EChchgvZj35rSk8SaJqMVrP4g0Ga91C1iWESRXPlpOq/d8wYz+VRadruh/8I2ujarpF5PHHeSXMf2e5CBdwwF5BJwKIKvBJtNu+u1uu34E1HhpyaUopNO3xX6fFpvv3+6xU+wtN4KuNdkvbt7g36Wro0hKuuzdk9yQfWtWw8LW1xqug6b9vuo7fU9PF5Ou8fM4DHYo6ZOMDOapabrukQ2moaReaVdTaPcXAuII0uAJoWAwPmxg8daL/AMQ2F/rdvcXGis+l2dsLWG2WdleNB0beP4snPpTksQ20k0tX07aLfdP/AIcmDwqUZSab0TWvfV7bNf8ADFyfQNPl8W6NogGu2kc8nlyxXqqHiGf+WbdCD7DFQWOjadFa32va9e35tYr5rW3WBgZ5pFzyWbpgAc1ak8XxHVtBW107UJLbS52mRbibzbiUsOgOOnoKoaf4gtFtb7StZ0yW60+4u2uURJfLmgkJPIOMdOCDUKOJcVdPp2vu7287W/zuaylg1N2a3dtHb4Va/knf/Kxcfw9ZXWo6NcafqF/LpGt3PkyCVsTJIp+ZW7Me4NSXXg0wapf2cl5PNpsNhPe2MyMCrlMAqR0BB4bGKqSeKbdNU0X7DprW2k6TP50Vt5u6SRicszMf4jTtL8Zz2dprVlJbGa11DzmhUuN0DSZzg+nPI9RScMYleP42vv8AmlYqNTL27T77q9vhV/k5Xt1XoXLXQLT/AIQmzvbqfX7qK5heQmyxJBbMCcK6Zz25Nc34O02DWPElhplzJJHDcSbHaPG4DBPGfpWz4X8UaZoUEE8Gk3a6hChUtHekQTnn5pEI/QelY3hjVBpHiS01iSEzCCUymNSFzkHgenWtqccQo1VZ31ttvr/wDmqTwsp0HpbTmWu2l9bLz0/HYTRrCG98T2ulyvIsM14IGZcbgu7GR70smlvJ4ofRLMlmN4baIuf9sqCf51pnWfD1vq1lqem6PfQzwXi3Enm3YcOoJJUDHBz3puq61oz3v9qaRpl9Z6n9qFyJpboSIDu3H5cetae0rOWkXZry389TL2WHULOSbTvpfVdloS6zY+D7H7Zp8V9q0moWoZRP5aGGWReCoXqBnjNcxXSavrfh2/W7vB4ckj1K6U72N2fJjc9ZFUDOe+DxXNg1rhVNQ9+9/O34WMsa6bn+7tbyv8r36iUUUV1HGFFHaigBaDRRQAlHaigUAJS0YpaAExRS0UAFGKKKAEIq9pd1bQ2t7a3azmO6RF3Q7dylX3dDxVKkNTKKkrMqE3B3Rupq9ilys6R3yO9itpKysoZMIq74z6/L0PYkZrIu3Wa6llV5nVmyGmbc5/3j61CKWohSjB3RdStKorMKKKK1MhD1oxS0UAJijBpaKAExQKWgUAJSnpQaOgoATmijNFAC0UUZFACHrQKDRQAtFJRQAuaTNIaSgB1FIKKAFpKOaQ0ALS5pBQaAFzS03NLQAtFJmgUALRRRQAUCikoAWkzQaKACiiigBc0lFFABRRRQAUUUUAIaBRRQAUUUUABNJRRQAUpNFFACUuaKKADNLRRQAUoNFFACd6KKKACiiigBM0UUUAf/2Q==" alt="Drawing Conclusions LLC">
+    <div>
+      <div class="brand-name">Drawing Conclusions</div>
+      <div class="brand-sub">Smart Social Bot</div>
+    </div>
+  </div>
+  <nav class="nav">
+    <div class="ng">Create</div>
+    <button class="nb active" onclick="showPage('compose',this)"><i class="ti ti-pencil-plus"></i> New Post</button>
+    <button class="nb" onclick="showPage('history',this)"><i class="ti ti-history"></i> Post History</button>
+    <div class="ng">Tools</div>
+    <button class="nb" onclick="showPage('pricing',this)"><i class="ti ti-map-pin"></i> Price Research</button>
+    <button class="nb" onclick="showPage('buffer',this)"><i class="ti ti-brand-buffer"></i> Buffer Guide</button>
+  </nav>
+  <div class="sidebar-bottom">
+    <button class="sbot-btn gemini-btn" onclick="openModal()"><i class="ti ti-key" style="font-size:14px"></i> Gemini API Key (Free)</button>
+    <a class="buffer-btn-s" href="https://buffer.com/app" target="_blank"><i class="ti ti-external-link" style="font-size:14px"></i> Open Buffer to Schedule</a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+<div class="topbar">
+  <span class="topbar-title" id="page-title">New Post</span>
+  <div style="display:flex;gap:9px;align-items:center">
+    <span id="gemini-status" style="font-size:11px;color:var(--text3)">⚪ Gemini not connected</span>
+    <a class="btn btn-buffer btn-sm" href="https://buffer.com/app" target="_blank"><i class="ti ti-brand-buffer"></i> Open Buffer</a>
+    <button class="btn btn-gemini btn-sm" onclick="runPipeline()"><i class="ti ti-sparkles"></i> Generate Posts</button>
+  </div>
+</div>
+
+<!-- ══════ COMPOSE PAGE ══════ -->
+<div id="page-compose" class="page active">
+
+  <!-- PIPELINE -->
+  <div class="pipeline">
+    <div class="pip-node" id="pip-0"><i class="ti ti-photo"></i><div class="pip-label">Upload<br>Image</div></div>
+    <div class="pip-arrow">›</div>
+    <div class="pip-node" id="pip-1"><i class="ti ti-eye"></i><div class="pip-label">Gemini<br>Scans</div></div>
+    <div class="pip-arrow">›</div>
+    <div class="pip-node" id="pip-2"><i class="ti ti-map-pin"></i><div class="pip-label">Price<br>Research</div></div>
+    <div class="pip-arrow">›</div>
+    <div class="pip-node" id="pip-3"><i class="ti ti-sparkles"></i><div class="pip-label">Write<br>Captions</div></div>
+    <div class="pip-arrow">›</div>
+    <div class="pip-node" id="pip-4"><i class="ti ti-brand-buffer"></i><div class="pip-label">Copy to<br>Buffer</div></div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 370px;gap:20px;align-items:start">
+
+    <!-- LEFT -->
+    <div>
+      <!-- IMAGE DROP -->
+      <div class="card" style="padding:0;overflow:hidden" id="img-card">
+        <div id="drop-zone" class="drop-zone" onclick="document.getElementById('file-in').click()">
+          <input type="file" id="file-in" accept="image/*" style="display:none" onchange="handleImg(this)">
+          <i class="ti ti-photo-up drop-icon"></i>
+          <div class="drop-text">Drop your photo here</div>
+          <div class="drop-sub">Gemini AI will scan it automatically<br>Detects merch vs personal · Researches your price</div>
+        </div>
+        <div id="prev-wrap" style="display:none" class="preview-wrap">
+          <img id="prev-img" class="preview-img" alt="preview">
+          <div id="scan-overlay" style="display:none;position:absolute;inset:0;background:rgba(11,11,13,0.88);align-items:center;justify-content:center;flex-direction:column;gap:10px">
+            <div class="spin spin-lg"></div>
+            <span style="font-size:13px;color:#82b0ff">Gemini is scanning your image...</span>
+          </div>
+          <button class="preview-clear" onclick="clearImg()"><i class="ti ti-x"></i> Clear</button>
+        </div>
+      </div>
+
+      <!-- SCAN RESULT -->
+      <div id="scan-box" class="scan-box"></div>
+
+      <!-- POST TYPE -->
+      <div class="card" style="margin-top:14px">
+        <div class="card-title"><i class="ti ti-adjustments" style="font-size:12px"></i> Post Type</div>
+        <div style="display:flex;gap:10px;margin-bottom:12px">
+          <button class="btn" id="btn-merch" onclick="setType('merch')" style="flex:1;justify-content:center"><i class="ti ti-tag"></i> Merch / For Sale</button>
+          <button class="btn" id="btn-personal" onclick="setType('personal')" style="flex:1;justify-content:center"><i class="ti ti-heart"></i> Personal Post</button>
+        </div>
+        <div id="type-note" style="font-size:12px;color:var(--text3);text-align:center">Gemini will auto-detect from your image — or choose above</div>
+
+        <!-- MERCH FIELDS -->
+        <div id="merch-fields" style="display:none;border-top:1px solid var(--border);padding-top:14px;margin-top:12px">
+          <div class="fg"><label class="fl">Item Name</label><input class="fi" id="m-name" placeholder="e.g. Wildflower Meadow — 8×10 Print"></div>
+          <div class="fr2">
+            <div class="fg"><label class="fl">Category</label>
+              <select class="fi" id="m-cat">
+                <option value="art print">Art Print</option>
+                <option value="original painting">Original Painting</option>
+                <option value="watercolor painting">Watercolor Painting</option>
+                <option value="digital art print">Digital Art Print</option>
+                <option value="ceramic pottery">Ceramic / Pottery</option>
+                <option value="greeting cards">Greeting Cards</option>
+                <option value="canvas print">Canvas Print</option>
+                <option value="tote bag">Tote Bag</option>
+                <option value="apparel shirt">T-Shirt / Apparel</option>
+                <option value="stickers">Stickers</option>
+                <option value="jewelry">Jewelry / Wearables</option>
+                <option value="custom portrait commission">Custom Portrait</option>
+                <option value="sculpture">Sculpture</option>
+                <option value="mixed media art">Mixed Media</option>
+              </select>
+            </div>
+            <div class="fg"><label class="fl">Size</label><input class="fi" id="m-size" placeholder="e.g. 8×10 in"></div>
+          </div>
+          <div class="fr2">
+            <div class="fg"><label class="fl">Edition / Stock</label><input class="fi" id="m-edition" placeholder="e.g. Limited to 25"></div>
+            <div class="fg"><label class="fl">Materials</label><input class="fi" id="m-materials" placeholder="e.g. Watercolor on cold press"></div>
+          </div>
+          <div class="fg"><label class="fl">Extra selling points</label><textarea class="fi" id="m-extra" rows="2" placeholder="e.g. Hand-signed, acid-free, gift-wrapped, ships in 3 days"></textarea></div>
+
+          <!-- PRICING SECTION -->
+          <div style="background:var(--oglow);border:1px solid var(--border);border-radius:9px;padding:14px;margin-top:4px">
+            <div style="font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--orange);font-family:var(--fh);margin-bottom:10px;font-weight:700">💰 Smart Pricing — Framingham, MA</div>
+            <div class="fr3">
+              <div class="fg" style="margin-bottom:0"><label class="fl">Your Price ($)</label><input class="fi" id="m-price" placeholder="AI suggests →"></div>
+              <div class="fg" style="margin-bottom:0"><label class="fl">Cost to Make ($)</label><input class="fi" id="m-cost" type="number" placeholder="e.g. 8"></div>
+              <div class="fg" style="margin-bottom:0"><label class="fl">Sell On</label>
+                <select class="fi" id="m-platform"><option value="etsy">Etsy</option><option value="instagram">Instagram DM</option><option value="website">My Website</option><option value="local">Local / In-Person</option></select>
+              </div>
+            </div>
+            <button class="btn btn-sm" style="margin-top:10px;width:100%;justify-content:center;border-color:var(--orange);color:var(--orange)" onclick="researchPrice()" id="price-btn">
+              <i class="ti ti-map-pin"></i> Research Framingham + Etsy Prices with Gemini
+            </button>
+            <div id="price-result" style="margin-top:10px;display:none"></div>
+          </div>
+        </div>
+
+        <!-- PERSONAL FIELDS -->
+        <div id="personal-fields" style="display:none;border-top:1px solid var(--border);padding-top:14px;margin-top:12px">
+          <div class="fg"><label class="fl">What's the vibe / context?</label><textarea class="fi" id="p-context" rows="3" placeholder="e.g. Studio day, just finished a piece I'm really proud of. Rainy afternoon, good music on."></textarea></div>
+          <div class="fg"><label class="fl">Tone</label>
+            <select class="fi" id="p-tone">
+              <option value="authentic">Authentic & Heartfelt</option>
+              <option value="excited">Excited / Hyped</option>
+              <option value="reflective">Reflective / Poetic</option>
+              <option value="casual">Casual & Conversational</option>
+              <option value="funny">Playful / Funny</option>
+              <option value="behind-scenes">Behind the Scenes</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- BIG GENERATE BUTTON -->
+      <button class="btn btn-gemini" id="gen-btn" onclick="runPipeline()" style="width:100%;justify-content:center;padding:14px;font-size:15px;border-radius:10px;margin-bottom:5px">
+        <i class="ti ti-sparkles"></i> Scan Image · Research Price · Write All Posts
+      </button>
+      <div style="font-size:11px;color:var(--text3);text-align:center;margin-bottom:20px">Powered by Google Gemini — 100% free</div>
+
+      <!-- LOADING PANEL -->
+      <div id="loading-panel" style="display:none" class="card">
+        <div class="card-title"><div class="spin" style="margin-right:6px"></div> Gemini is working...</div>
+        <div id="loading-steps"></div>
+      </div>
+
+      <!-- POSTS -->
+      <div id="posts-panel" style="display:none">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+          <div style="font-family:var(--fh);font-size:18px;font-weight:800">Your Posts ✓</div>
+          <button class="btn btn-ghost btn-sm" onclick="runPipeline()"><i class="ti ti-refresh"></i> Regenerate</button>
+        </div>
+        <div id="posts-list"></div>
+
+        <!-- BUFFER HANDOFF -->
+        <div class="buffer-handoff">
+          <div class="bh-title"><i class="ti ti-brand-buffer" style="font-size:18px"></i> Ready for Buffer!</div>
+          <div class="bh-desc">Your captions are written. Now copy one → paste into Buffer → schedule it. That's it!</div>
+          <div class="bh-step"><div class="bh-num">1</div><span>Click a platform button below — it copies that caption AND opens Buffer automatically</span></div>
+          <div class="bh-step"><div class="bh-num">2</div><span>In Buffer: paste the caption, upload your image, pick your time</span></div>
+          <div class="bh-step"><div class="bh-num">3</div><span>Hit Schedule — Buffer posts it at the right time on all your platforms 🎉</span></div>
+          <div style="font-size:11px;color:rgba(23,213,130,0.55);margin:12px 0 6px">👇 Click to copy + open Buffer:</div>
+          <div id="bh-btns" style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:14px"></div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <a class="btn btn-buffer" href="https://buffer.com/app" target="_blank"><i class="ti ti-brand-buffer"></i> Open Buffer Now</a>
+            <button class="btn btn-ghost btn-sm" onclick="copyAll()"><i class="ti ti-copy"></i> Copy All Captions</button>
+            <button class="btn btn-ghost btn-sm" onclick="saveHistory()"><i class="ti ti-bookmark"></i> Save to History</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div>
+      <!-- PLATFORMS -->
+      <div class="card">
+        <div class="card-title"><i class="ti ti-share" style="font-size:12px"></i> Write Posts For</div>
+        <div id="plat-toggles"></div>
+        <div style="font-size:11px;color:var(--text3);line-height:1.5;margin-top:4px"><i class="ti ti-info-circle" style="font-size:12px"></i> Each platform gets its own perfectly sized caption.</div>
+      </div>
+
+      <!-- HASHTAGS -->
+      <div class="card">
+        <div class="card-title"><i class="ti ti-hash" style="font-size:12px"></i> Hashtag Suggestions</div>
+        <div id="hashtag-chips" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px"></div>
+        <div class="fg" style="margin-bottom:8px"><label class="fl">Custom hashtags</label><input class="fi" id="custom-tags" placeholder="#art #handmade #originalart"></div>
+        <button class="btn btn-ghost btn-sm" style="width:100%;justify-content:center" onclick="genHashtags()"><i class="ti ti-refresh"></i> Refresh Suggestions</button>
+      </div>
+
+      <!-- BEST TIMES -->
+      <div class="card">
+        <div class="card-title"><i class="ti ti-clock" style="font-size:12px"></i> Best Times to Post</div>
+        <div style="font-size:12px;color:var(--text2);line-height:2.1">
+          <div>📸 <strong style="color:var(--text)">Instagram</strong> — Tue & Thu 11am, 7pm</div>
+          <div>👥 <strong style="color:var(--text)">Facebook</strong> — Wed & Fri 1–3pm</div>
+          <div>𝕏 <strong style="color:var(--text)">Twitter/X</strong> — Mon–Wed 9am</div>
+          <div>🎵 <strong style="color:var(--text)">TikTok</strong> — Tue–Fri 7–9pm</div>
+          <div>📌 <strong style="color:var(--text)">Pinterest</strong> — Sat–Sun 8pm</div>
+          <div>🧵 <strong style="color:var(--text)">Threads</strong> — Tue & Fri 9am</div>
+        </div>
+        <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border2);font-size:11px;color:var(--text3)">💡 Turn on "Optimal Timing" in Buffer and it picks the best time automatically.</div>
+      </div>
+
+      <!-- BUFFER TIP -->
+      <div class="card" style="background:rgba(23,213,130,0.04);border-color:rgba(23,213,130,0.2)">
+        <div class="card-title" style="color:#17d582"><i class="ti ti-brand-buffer" style="font-size:12px"></i> Buffer Free Plan</div>
+        <div style="font-size:12px;color:rgba(23,213,130,0.65);line-height:1.9">
+          ✓ 3 social profiles — free forever<br>
+          ✓ $6/mo unlocks all 6 platforms<br>
+          ✓ Schedules posts automatically<br>
+          ✓ Suggests best posting times<br>
+          ✓ Shows analytics on what works
+        </div>
+        <a class="btn btn-buffer btn-sm" href="https://buffer.com/pricing" target="_blank" style="margin-top:12px;width:100%;justify-content:center"><i class="ti ti-external-link"></i> Get Buffer Free</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ PRICE RESEARCH PAGE ══════ -->
+<div id="page-pricing" class="page">
+  <div style="font-family:var(--fh);font-size:22px;font-weight:800;margin-bottom:6px">Local Price Research</div>
+  <div style="font-size:13px;color:var(--text2);margin-bottom:20px">Gemini researches current Etsy prices + Framingham, MA local market to suggest the right price for your work.</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
+    <div class="card">
+      <div class="card-title"><i class="ti ti-search" style="font-size:12px"></i> What Are You Pricing?</div>
+      <div class="fg"><label class="fl">Item Type</label>
+        <select class="fi" id="pr-cat">
+          <option value="art print 8x10 inches">Art Print (8×10)</option>
+          <option value="art print 11x14 inches">Art Print (11×14)</option>
+          <option value="original small watercolor painting">Original Watercolor (small)</option>
+          <option value="original medium watercolor painting">Original Watercolor (medium)</option>
+          <option value="original oil painting">Original Oil Painting</option>
+          <option value="digital art print">Digital Art Print</option>
+          <option value="set of 6 handmade greeting cards">Greeting Cards (set of 6)</option>
+          <option value="canvas print">Canvas Print</option>
+          <option value="handmade ceramic mug">Handmade Ceramic Mug</option>
+          <option value="printed tote bag">Tote Bag (printed)</option>
+          <option value="custom portrait commission">Custom Portrait Commission</option>
+          <option value="sticker sheet">Sticker Sheet</option>
+        </select>
+      </div>
+      <div class="fg"><label class="fl">Cost to Make ($)</label><input class="fi" id="pr-cost" type="number" placeholder="e.g. 8"></div>
+      <div class="fg"><label class="fl">Time to Make (hours)</label><input class="fi" id="pr-time" type="number" placeholder="e.g. 3" step="0.5"></div>
+      <div class="fg"><label class="fl">Hourly Rate Goal ($)</label><input class="fi" id="pr-rate" type="number" placeholder="e.g. 20"></div>
+      <div class="fg"><label class="fl">Selling On</label>
+        <select class="fi" id="pr-where"><option value="etsy">Etsy</option><option value="instagram">Instagram</option><option value="local craft fair Framingham MA">Local Craft Fair (Framingham area)</option><option value="my own website">My Website</option></select>
+      </div>
+      <button class="btn btn-gemini" onclick="standaloneResearch()" id="pr-btn" style="width:100%;justify-content:center"><i class="ti ti-map-pin"></i> Research Framingham + Etsy Prices</button>
+    </div>
+    <div><div id="pr-result"><div class="alert a-tip"><i class="ti ti-bulb" style="font-size:16px;flex-shrink:0"></i> Fill in your item details and click Research — Gemini will look up current Etsy listings and Framingham, MA market pricing to give you a smart price range.</div></div></div>
+  </div>
+</div>
+
+<!-- ══════ HISTORY PAGE ══════ -->
+<div id="page-history" class="page">
+  <div style="font-family:var(--fh);font-size:22px;font-weight:800;margin-bottom:6px">Post History</div>
+  <div style="font-size:13px;color:var(--text2);margin-bottom:20px">Posts you've saved</div>
+  <div id="history-list"></div>
+</div>
+
+<!-- ══════ BUFFER GUIDE PAGE ══════ -->
+<div id="page-buffer" class="page">
+  <div style="font-family:var(--fh);font-size:22px;font-weight:800;margin-bottom:6px">The Full Setup Guide</div>
+  <div style="font-size:13px;color:var(--text2);margin-bottom:24px">Everything you need — Gemini key + Buffer — in plain English.</div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+    <div class="card" style="border-color:rgba(66,133,244,0.3)">
+      <div class="card-title" style="color:#82b0ff"><i class="ti ti-brand-google" style="font-size:13px"></i> Part 1 — Get Your Free Gemini Key (2 min)</div>
+      <div style="font-size:13px;color:var(--text2);line-height:2">
+        <div>1. Go to <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:#82b0ff">aistudio.google.com</a></div>
+        <div>2. Sign in with your Google/Gmail account</div>
+        <div>3. Click <strong style="color:var(--text)">"Create API key"</strong></div>
+        <div>4. Copy the key (starts with <strong style="color:var(--text)">AIza...</strong>)</div>
+        <div>5. Click <strong style="color:var(--text)">"Gemini API Key"</strong> in the sidebar here</div>
+        <div>6. Paste it in → Save ✓</div>
+      </div>
+      <a class="btn btn-gemini btn-sm" href="https://aistudio.google.com/app/apikey" target="_blank" style="margin-top:12px;width:100%;justify-content:center;text-decoration:none"><i class="ti ti-external-link"></i> Get Free Gemini Key</a>
+    </div>
+    <div class="card" style="border-color:rgba(23,213,130,0.3)">
+      <div class="card-title" style="color:#17d582"><i class="ti ti-brand-buffer" style="font-size:13px"></i> Part 2 — Set Up Buffer (5 min)</div>
+      <div style="font-size:13px;color:var(--text2);line-height:2">
+        <div>1. Go to <a href="https://buffer.com" target="_blank" style="color:#17d582">buffer.com</a> → Get Started Free</div>
+        <div>2. Sign up with your email</div>
+        <div>3. Click <strong style="color:var(--text)">Connect a Channel</strong></div>
+        <div>4. Choose Instagram → log in normally</div>
+        <div>5. Repeat for Facebook, TikTok, etc.</div>
+        <div>6. Done — Buffer handles all the posting!</div>
+      </div>
+      <a class="btn btn-buffer btn-sm" href="https://buffer.com/signup" target="_blank" style="margin-top:12px;width:100%;justify-content:center;text-decoration:none"><i class="ti ti-external-link"></i> Sign Up for Buffer Free</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><i class="ti ti-arrow-right" style="font-size:12px"></i> Part 3 — The Daily Workflow (3 minutes per post)</div>
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:4px">
+      <div style="text-align:center;padding:12px 8px">
+        <div style="font-size:30px;margin-bottom:8px">🖼</div>
+        <div style="font-family:var(--fh);font-size:12px;font-weight:700;margin-bottom:4px">Drop Photo</div>
+        <div style="font-size:11px;color:var(--text3);line-height:1.4">Drop your art photo into the bot</div>
+      </div>
+      <div style="text-align:center;padding:12px 8px">
+        <div style="font-size:30px;margin-bottom:8px">🤖</div>
+        <div style="font-family:var(--fh);font-size:12px;font-weight:700;margin-bottom:4px">AI Works</div>
+        <div style="font-size:11px;color:var(--text3);line-height:1.4">Gemini scans, prices, writes captions</div>
+      </div>
+      <div style="text-align:center;padding:12px 8px">
+        <div style="font-size:30px;margin-bottom:8px">📋</div>
+        <div style="font-family:var(--fh);font-size:12px;font-weight:700;margin-bottom:4px">Copy Caption</div>
+        <div style="font-size:11px;color:var(--text3);line-height:1.4">Click the platform button to copy</div>
+      </div>
+      <div style="text-align:center;padding:12px 8px">
+        <div style="font-size:30px;margin-bottom:8px">📅</div>
+        <div style="font-family:var(--fh);font-size:12px;font-weight:700;margin-bottom:4px">Paste in Buffer</div>
+        <div style="font-size:11px;color:var(--text3);line-height:1.4">Paste caption + upload image + pick time</div>
+      </div>
+      <div style="text-align:center;padding:12px 8px">
+        <div style="font-size:30px;margin-bottom:8px">🚀</div>
+        <div style="font-family:var(--fh);font-size:12px;font-weight:700;margin-bottom:4px">Buffer Posts It</div>
+        <div style="font-size:11px;color:var(--text3);line-height:1.4">Goes live automatically at the right time</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="alert a-green"><i class="ti ti-check" style="font-size:16px;flex-shrink:0"></i><span><strong>Total cost: $0.</strong> Gemini is free. GitHub Pages hosting is free. Buffer free plan covers 3 platforms. Your art business has a professional social media system for absolutely nothing.</span></div>
+</div>
+
+</div><!-- /main -->
+</div><!-- /shell -->
+
+<div id="_notif"></div>
+
+<script>
+// ══════════════════════ STATE ══════════════════════
+const S = {
+  imgData:null, imgMime:'image/jpeg',
+  postType:null, scanResult:null, priceResult:null,
+  generatedPosts:{}, history:[],
+  selectedPlats:['instagram','facebook','twitter','tiktok','pinterest','threads']
+};
+
+const PLATS = [
+  {id:'instagram', name:'Instagram',   icon:'📸', limit:2200},
+  {id:'facebook',  name:'Facebook',    icon:'👥', limit:63206},
+  {id:'twitter',   name:'X / Twitter', icon:'𝕏',  limit:280},
+  {id:'tiktok',    name:'TikTok',      icon:'🎵', limit:2200},
+  {id:'pinterest', name:'Pinterest',   icon:'📌', limit:500},
+  {id:'threads',   name:'Threads',     icon:'🧵', limit:500},
+];
+
+// Gemini API endpoint
+const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+
+// ══════════════════════ KEYS ══════════════════════
+function loadKeys(){try{return JSON.parse(localStorage.getItem('dcbot_gemini')||'{}');}catch{return {};}}
+function saveKey(){
+  const keys=loadKeys();
+  keys.gemini=document.getElementById('k-gemini').value.trim();
+  keys.bizname=document.getElementById('k-bizname').value.trim()||'Drawing Conclusions LLC';
+  keys.voice=document.getElementById('k-voice').value.trim();
+  localStorage.setItem('dcbot_gemini',JSON.stringify(keys));
+  closeModal();
+  updateGeminiStatus();
+  notif('Gemini connected! You\'re all set 🎉');
+}
+function updateGeminiStatus(){
+  const keys=loadKeys();
+  const el=document.getElementById('gemini-status');
+  if(el) el.innerHTML=keys.gemini?'<span style="color:var(--green)">🟢 Gemini connected</span>':'<span style="color:var(--text3)">⚪ Gemini not connected</span>';
+}
+function toggleKeyVis(){
+  const el=document.getElementById('k-gemini');
+  if(el) el.type=el.type==='password'?'text':'password';
+}
+
+// ══════════════════════ GEMINI API CALL ══════════════════════
+async function callGemini(parts, systemInstruction=''){
+  const keys=loadKeys();
+  if(!keys.gemini) throw new Error('No Gemini key');
+  const url=GEMINI_URL+'?key='+keys.gemini;
+  const body={
+    contents:[{role:'user', parts}],
+    generationConfig:{temperature:0.85, maxOutputTokens:2048}
+  };
+  if(systemInstruction) body.system_instruction={parts:[{text:systemInstruction}]};
+  const res=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  if(!res.ok){const e=await res.json();throw new Error(e.error?.message||'Gemini API error');}
+  const data=await res.json();
+  return data.candidates?.[0]?.content?.parts?.[0]?.text||'';
+}
+
+// ══════════════════════ NAV ══════════════════════
+function showPage(id,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  if(el) el.classList.add('active');
+  const titles={compose:'New Post',pricing:'Price Research',history:'Post History',buffer:'Setup Guide'};
+  document.getElementById('page-title').textContent=titles[id]||'';
+  if(id==='history') renderHistory();
+}
+function openModal(){
+  document.getElementById('key-modal').classList.add('open');
+  const keys=loadKeys();
+  if(document.getElementById('k-gemini')) document.getElementById('k-gemini').value=keys.gemini||'';
+  if(document.getElementById('k-bizname')) document.getElementById('k-bizname').value=keys.bizname||'Drawing Conclusions LLC';
+  if(document.getElementById('k-voice')) document.getElementById('k-voice').value=keys.voice||'';
+}
+function closeModal(){document.getElementById('key-modal').classList.remove('open');}
+document.addEventListener('click',e=>{if(e.target===document.getElementById('key-modal')) closeModal();});
+
+// ══════════════════════ IMAGE ══════════════════════
+function handleImg(inp){
+  const file=inp.files[0]; if(!file) return;
+  S.imgMime=file.type||'image/jpeg';
+  const reader=new FileReader();
+  reader.onload=e=>{
+    S.imgData=e.target.result.split(',')[1];
+    document.getElementById('drop-zone').style.display='none';
+    document.getElementById('prev-wrap').style.display='block';
+    document.getElementById('prev-img').src=e.target.result;
+    setPip(0);
+  };
+  reader.readAsDataURL(file);
+}
+function clearImg(){
+  S.imgData=null; S.postType=null; S.scanResult=null; S.priceResult=null; S.generatedPosts={};
+  document.getElementById('file-in').value='';
+  document.getElementById('drop-zone').style.display='';
+  document.getElementById('prev-wrap').style.display='none';
+  document.getElementById('scan-box').style.display='none';
+  document.getElementById('posts-panel').style.display='none';
+  document.getElementById('loading-panel').style.display='none';
+  document.getElementById('price-result').style.display='none';
+  document.getElementById('merch-fields').style.display='none';
+  document.getElementById('personal-fields').style.display='none';
+  document.getElementById('btn-merch').className='btn';
+  document.getElementById('btn-personal').className='btn';
+  document.getElementById('type-note').textContent='Gemini will auto-detect from your image — or choose above';
+  setPip(-1);
+}
+
+// ══════════════════════ PIPELINE VISUAL ══════════════════════
+function setPip(step){
+  for(let i=0;i<=4;i++){
+    const el=document.getElementById('pip-'+i);
+    if(!el) continue;
+    el.className='pip-node'+(step>i?' done':step===i?' active':'');
+  }
+}
+function setLoadSteps(steps,activeIdx){
+  document.getElementById('loading-steps').innerHTML=steps.map((s,i)=>`
+    <div class="loading-step">
+      <div class="ls-icon">${i<activeIdx?'<i class="ti ti-check" style="color:var(--green);font-size:15px"></i>':i===activeIdx?'<div class="spin"></div>':'<i class="ti ti-circle" style="color:var(--text3);font-size:13px"></i>'}</div>
+      <span style="color:${i<activeIdx?'var(--green)':i===activeIdx?'var(--text)':'var(--text3)'}">${s}</span>
+    </div>`).join('');
+}
+
+// ══════════════════════ POST TYPE ══════════════════════
+function setType(t){
+  S.postType=t;
+  document.getElementById('merch-fields').style.display=t==='merch'?'block':'none';
+  document.getElementById('personal-fields').style.display=t==='personal'?'block':'none';
+  document.getElementById('btn-merch').className='btn'+(t==='merch'?' btn-primary':'');
+  document.getElementById('btn-personal').className='btn'+(t==='personal'?' btn-primary':'');
+  document.getElementById('type-note').textContent=t==='merch'?'🏷 Merch / Sales post selected':'🙋 Personal post selected';
+  genHashtags();
+}
+
+// ══════════════════════ PLATFORM TOGGLES ══════════════════════
+function renderPlatToggles(){
+  document.getElementById('plat-toggles').innerHTML=PLATS.map(p=>{
+    const on=S.selectedPlats.includes(p.id);
+    return `<div class="ptog ${on?'on':''}" data-plat="${p.id}" onclick="togglePlat(this)">
+      <div class="ptog-left">${p.icon} ${p.name}</div>
+      <div class="ptog-check">${on?'<i class="ti ti-check" style="font-size:11px;color:#fff"></i>':''}</div>
+    </div>`;
+  }).join('');
+}
+function togglePlat(el){
+  const p=el.dataset.plat;
+  if(S.selectedPlats.includes(p)) S.selectedPlats=S.selectedPlats.filter(x=>x!==p);
+  else S.selectedPlats.push(p);
+  renderPlatToggles();
+}
+
+// ══════════════════════ MAIN PIPELINE ══════════════════════
+async function runPipeline(){
+  const keys=loadKeys();
+  if(!keys.gemini){openModal();return;}
+  if(!S.imgData && !S.postType){notif('Drop an image first!',true);return;}
+
+  const steps=['🔍 Scanning your image with Gemini...','💰 Researching Framingham, MA prices...','✍️ Writing platform captions...','📋 Preparing Buffer handoff...'];
+  document.getElementById('loading-panel').style.display='block';
+  document.getElementById('posts-panel').style.display='none';
+  const btn=document.getElementById('gen-btn');
+  btn.disabled=true; btn.innerHTML='<div class="spin"></div> Gemini is working...';
+
+  try{
+    // STEP 1 — SCAN
+    setPip(1); setLoadSteps(steps,0);
+    await doScan(keys);
+
+    // STEP 2 — PRICE
+    setPip(2); setLoadSteps(steps,1);
+    if(S.postType==='merch') await researchPrice(keys);
+    else await new Promise(r=>setTimeout(r,300));
+
+    // STEP 3 — WRITE
+    setPip(3); setLoadSteps(steps,2);
+    await writePosts(keys);
+
+    // STEP 4 — DONE
+    setPip(4); setLoadSteps(steps,3);
+    await new Promise(r=>setTimeout(r,400));
+
+    document.getElementById('loading-panel').style.display='none';
+    document.getElementById('posts-panel').style.display='block';
+    renderPosts();
+    renderBhBtns();
+    genHashtags();
+
+  }catch(err){
+    document.getElementById('loading-panel').style.display='none';
+    console.error(err);
+    if(err.message.includes('API_KEY_INVALID')||err.message.includes('401')){
+      notif('Invalid Gemini key — click "Gemini API Key" to update it',true);
+      openModal();
+    } else {
+      notif('Something went wrong: '+err.message,true);
+    }
+  }
+  btn.disabled=false; btn.innerHTML='<i class="ti ti-sparkles"></i> Scan Image · Research Price · Write All Posts';
+}
+
+// ══════════════════════ SCAN ══════════════════════
+async function doScan(keys){
+  if(!S.imgData){if(!S.postType) setType('personal'); return;}
+  const parts=[
+    {inline_data:{mime_type:S.imgMime, data:S.imgData}},
+    {text:'Look at this image carefully. Determine if it is: (A) artwork or merch for sale — a print, painting, craft, product, or anything being sold, OR (B) a personal or lifestyle image — selfie, studio moment, behind-the-scenes, event, nature, food, etc. Also describe briefly what you see. Respond ONLY with valid JSON, no markdown:\n{"type":"merch","description":"brief description","category":"product category e.g. watercolor print"}\nOR\n{"type":"personal","description":"brief description","mood":"the vibe/mood"}'}
+  ];
+  const text=await callGemini(parts);
+  const jm=text.replace(/```json|```/g,'').trim().match(/\{[\s\S]*\}/);
+  if(jm){
+    try{
+      S.scanResult=JSON.parse(jm[0]);
+      setType(S.scanResult.type);
+      showScanBox(S.scanResult);
+      if(S.scanResult.type==='merch'&&S.scanResult.category){
+        const sel=document.getElementById('m-cat');
+        for(let i=0;i<sel.options.length;i++){
+          if(sel.options[i].value.toLowerCase().includes(S.scanResult.category.toLowerCase().split(' ')[0])){sel.selectedIndex=i;break;}
+        }
+      }
+    }catch{setType('personal');}
+  } else {setType('personal');}
+}
+function showScanBox(r){
+  const el=document.getElementById('scan-box');
+  el.className='scan-box '+(r.type==='merch'?'scan-merch':'scan-personal');
+  el.style.display='block';
+  el.innerHTML=`<div class="scan-label">${r.type==='merch'?'🏷 Merch / Artwork detected':'🙋 Personal photo detected'} — by Gemini AI</div><div style="font-size:13px;line-height:1.5">${r.description||''}</div>`;
+}
+
+// ══════════════════════ PRICE RESEARCH ══════════════════════
+async function researchPrice(keys){
+  if(!keys) keys=loadKeys();
+  if(!keys.gemini){openModal();return;}
+  const cat=document.getElementById('m-cat')?.value||S.scanResult?.category||'art print';
+  const size=document.getElementById('m-size')?.value||'';
+  const cost=document.getElementById('m-cost')?.value||'';
+  const platform=document.getElementById('m-platform')?.value||'etsy';
+  const materials=document.getElementById('m-materials')?.value||'';
+
+  const btn=document.getElementById('price-btn');
+  if(btn){btn.innerHTML='<div class="spin spin-orange"></div> Researching...';btn.disabled=true;}
+
+  const prompt=`You are a pricing expert for handmade art businesses. A seller in Framingham, Massachusetts 01701 (MetroWest Boston area) needs pricing guidance.
+
+Item: ${cat}${size?' size '+size:''}${materials?' materials: '+materials:''}
+Selling on: ${platform}
+Cost to make: ${cost?'$'+cost:'unknown'}
+Location: Framingham MA 01701
+
+Using your knowledge of:
+- Current Etsy marketplace pricing for comparable handmade art items
+- The Framingham/MetroWest Boston local market (craft fairs, local art events, galleries)
+- What Boston-area buyers typically pay for handmade art
+- Reasonable profit margins for small art businesses
+
+Give a pricing recommendation. Return ONLY valid JSON, no markdown:
+{"suggested_price":45,"price_range_low":35,"price_range_high":60,"reasoning":"2-3 sentences specific to Framingham MA market","etsy_comparable":"what similar items go for on Etsy","local_market_note":"Framingham MetroWest local market insight","margin_note":"profit note if cost provided","tips":["tip 1","tip 2"]}`;
+
+  try{
+    const text=await callGemini([{text:prompt}]);
+    const jm=text.replace(/```json|```/g,'').trim().match(/\{[\s\S]*\}/);
+    if(jm){
+      S.priceResult=JSON.parse(jm[0]);
+      renderPriceResult(S.priceResult);
+      if(S.priceResult.suggested_price&&!document.getElementById('m-price')?.value){
+        const el=document.getElementById('m-price');
+        if(el) el.value=S.priceResult.suggested_price;
+      }
+    }
+  }catch(e){
+    S.priceResult={suggested_price:35,price_range_low:25,price_range_high:55,reasoning:'Based on typical Framingham area art market and Etsy pricing for this category.',etsy_comparable:'Similar items on Etsy typically $25–$55',local_market_note:'MetroWest Boston area buyers are accustomed to fair pricing for handmade art.',tips:['Number and sign limited editions to justify premium pricing','Offer local pickup to save buyers on shipping']};
+    renderPriceResult(S.priceResult);
+  }
+  if(btn){btn.innerHTML='<i class="ti ti-map-pin"></i> Research Framingham + Etsy Prices with Gemini';btn.disabled=false;}
+}
+
+function renderPriceResult(r){
+  const el=document.getElementById('price-result');
+  if(!el) return;
+  el.style.display='block';
+  el.innerHTML=`<div class="price-box">
+    <div class="price-main">$${r.suggested_price}</div>
+    <div class="price-range">Range: $${r.price_range_low} – $${r.price_range_high}</div>
+    <div style="margin-bottom:8px"><span class="psource">📍 Framingham, MA</span><span class="psource">🛒 Etsy</span><span class="psource">🎨 Local Market</span></div>
+    <div class="price-why"><strong style="color:var(--orange2)">Why this price?</strong><br>${r.reasoning}<br><br>
+    <strong style="color:var(--text)">Etsy:</strong> ${r.etsy_comparable}<br>
+    <strong style="color:var(--text)">Local:</strong> ${r.local_market_note}
+    ${r.margin_note?'<br><strong style="color:var(--text)">Margin:</strong> '+r.margin_note:''}
+    ${r.tips?'<br><br><strong style="color:var(--text2)">💡 Tips:</strong><br>'+r.tips.map(t=>'• '+t).join('<br>'):''}
+    </div>
+  </div>`;
+}
+
+// Standalone research page
+async function standaloneResearch(){
+  const keys=loadKeys();
+  if(!keys.gemini){openModal();return;}
+  const btn=document.getElementById('pr-btn');
+  btn.innerHTML='<div class="spin"></div> Researching...';btn.disabled=true;
+  const cat=document.getElementById('pr-cat').value;
+  const cost=document.getElementById('pr-cost').value;
+  const time=document.getElementById('pr-time').value;
+  const rate=document.getElementById('pr-rate').value;
+  const where=document.getElementById('pr-where').value;
+  const laborCost=time&&rate?(parseFloat(time)*parseFloat(rate)).toFixed(2):null;
+  const totalCost=cost&&laborCost?(parseFloat(cost)+parseFloat(laborCost)).toFixed(2):cost||null;
+
+  const prompt=`Pricing expert for handmade art. Seller in Framingham MA 01701.
+Item: ${cat}
+Selling on: ${where}
+Materials cost: ${cost?'$'+cost:'not given'}
+Time: ${time?time+' hours':'not given'}
+Hourly goal: ${rate?'$'+rate+'/hr':'not given'}
+Total cost to make: ${totalCost?'$'+totalCost:'not given'}
+
+Research Etsy + Framingham MetroWest Boston local market pricing. Return ONLY JSON:
+{"suggested_price":45,"price_range_low":30,"price_range_high":65,"reasoning":"specific to Framingham MA","etsy_comparable":"current Etsy pricing","local_market_note":"Framingham area insight","margin_note":"profit analysis","profit_at_suggested":30,"margin_percent":65,"tips":["tip1","tip2","tip3"],"seasonal_note":"seasonal advice"}`;
+
+  try{
+    const text=await callGemini([{text:prompt}]);
+    const jm=text.replace(/```json|```/g,'').trim().match(/\{[\s\S]*\}/);
+    if(jm){
+      const r=JSON.parse(jm[0]);
+      document.getElementById('pr-result').innerHTML=`<div class="price-box">
+        <div class="price-main">$${r.suggested_price}</div>
+        <div class="price-range">Range: $${r.price_range_low} – $${r.price_range_high}</div>
+        <div style="margin-bottom:8px"><span class="psource">📍 Framingham MA</span><span class="psource">🛒 Etsy</span><span class="psource">🎨 Local</span></div>
+        <div class="price-why">
+          <strong style="color:var(--orange2)">Why this price?</strong><br>${r.reasoning}<br><br>
+          <strong>Etsy:</strong> ${r.etsy_comparable}<br>
+          <strong>Local market:</strong> ${r.local_market_note}<br>
+          <strong>Margin:</strong> ${r.margin_note}
+          ${r.profit_at_suggested?'<br><strong>Profit:</strong> ~$'+r.profit_at_suggested+' ('+r.margin_percent+'% margin)':''}
+          ${r.seasonal_note?'<br><strong>Seasonal:</strong> '+r.seasonal_note:''}
+          ${r.tips?'<br><br><strong style="color:var(--text2)">💡 Tips:</strong><br>'+r.tips.map(t=>'• '+t).join('<br>'):''}
+        </div>
+      </div>`;
+    }
+  }catch(e){document.getElementById('pr-result').innerHTML='<div class="alert a-tip"><i class="ti ti-alert-triangle"></i> Could not fetch pricing. Check your Gemini key.</div>';}
+  btn.innerHTML='<i class="ti ti-map-pin"></i> Research Framingham + Etsy Prices';btn.disabled=false;
+}
+
+// ══════════════════════ WRITE POSTS ══════════════════════
+async function writePosts(keys){
+  const plats=S.selectedPlats.filter(p=>PLATS.find(x=>x.id===p));
+  const keys2=keys||loadKeys();
+  const bizname=keys2.bizname||'Drawing Conclusions LLC';
+  const voice=keys2.voice||'Warm, authentic, passionate about handmade art.';
+  const price=S.priceResult?.suggested_price?'$'+S.priceResult.suggested_price:(document.getElementById('m-price')?.value?'$'+document.getElementById('m-price').value:'');
+  const customTags=document.getElementById('custom-tags')?.value||'';
+
+  let context='';
+  if(S.postType==='merch'){
+    context=`PRODUCT: ${document.getElementById('m-name')?.value||S.scanResult?.category||'handmade art'}
+CATEGORY: ${document.getElementById('m-cat')?.value||'art'}
+SIZE: ${document.getElementById('m-size')?.value||''}
+PRICE: ${price||'contact for price'}
+EDITION: ${document.getElementById('m-edition')?.value||'available now'}
+MATERIALS: ${document.getElementById('m-materials')?.value||'handmade'}
+SELLING ON: ${document.getElementById('m-platform')?.value||'etsy'}
+EXTRA: ${document.getElementById('m-extra')?.value||''}
+SELLER LOCATION: Framingham, MA`;
+  } else {
+    context=`CONTEXT: ${document.getElementById('p-context')?.value||'studio moment, art life'}
+TONE: ${document.getElementById('p-tone')?.value||'authentic'}
+IMAGE VIBE: ${S.scanResult?.mood||S.scanResult?.description||'creative moment'}
+LOCATION: Framingham, MA`;
+  }
+
+  const platSpec=plats.map(id=>{const p=PLATS.find(x=>x.id===id);return `${p.name} (${p.limit} char max)`;}).join(', ');
+
+  const prompt=`You are a social media expert writing posts for "${bizname}", a handmade art business in Framingham, MA.
+Brand voice: ${voice}
+Post type: ${S.postType==='merch'?'SALES POST — create genuine desire, mention price naturally, end with a clear call to action (link in bio / DM to purchase)':'PERSONAL POST — authentic, relatable, no hard selling, show the human behind the brand'}
+
+${context}
+${customTags?'Include hashtags: '+customTags:''}
+${S.scanResult?.description?'Image shows: '+S.scanResult.description:''}
+
+Write one unique post for each platform: ${platSpec}
+
+CRITICAL RULES:
+- X/Twitter: MUST be under 280 characters total — be punchy, no wasted words
+- Instagram: storytelling caption + big hashtag block (25+ hashtags) separated by line breaks at the end
+- Facebook: conversational, slightly longer, shareable, no hashtag block needed
+- TikTok: high energy, "POV:" or hook opening, very casual Gen-Z friendly, 3-5 hashtags
+- Pinterest: search-optimized, descriptive, inspirational, 3-5 hashtags
+- Threads: casual, like texting a friend, conversational opener
+- For merch posts: make the price feel like a great deal, not an afterthought
+- Occasionally reference "Framingham" or "MetroWest" or "Boston area" to feel local and authentic
+
+Return ONLY valid JSON, no markdown, no explanation:
+{${plats.map(p=>'"'+p+'":"caption here"').join(',')}}`;
+
+  const msgParts=S.imgData?[{inline_data:{mime_type:S.imgMime,data:S.imgData}},{text:prompt}]:[{text:prompt}];
+  const text=await callGemini(msgParts,`You write social media posts for ${bizname}. Always respond with valid JSON only.`);
+  const jm=text.replace(/```json|```/g,'').trim().match(/\{[\s\S]*\}/);
+  if(jm) S.generatedPosts=JSON.parse(jm[0]);
+}
+
+// ══════════════════════ RENDER POSTS ══════════════════════
+function renderPosts(){
+  const list=document.getElementById('posts-list');
+  list.innerHTML='';
+  Object.entries(S.generatedPosts).forEach(([id,text])=>{
+    const p=PLATS.find(x=>x.id===id); if(!p) return;
+    const over=text.length>p.limit;
+    const d=document.createElement('div');
+    d.className='post-card';
+    d.innerHTML=`
+      <div class="post-head">
+        <div class="post-plat">${p.icon} ${p.name}</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="char-ct ${over?'char-over':''}">${text.length}/${p.limit}</span>
+          <button class="btn btn-ghost btn-sm" onclick="toggleEdit('${id}')"><i class="ti ti-edit"></i></button>
+          <button class="btn btn-ghost btn-sm" onclick="copyPost('${id}')"><i class="ti ti-copy"></i></button>
+        </div>
+      </div>
+      <div class="post-body">
+        <div class="post-text" id="pt-${id}">${esc(text)}</div>
+        <textarea class="post-edit" id="pe-${id}" oninput="onEdit('${id}')">${text}</textarea>
+      </div>
+      ${over?`<div style="padding:8px 15px;font-size:11px;color:#ef4444;border-top:1px solid var(--border2)"><i class="ti ti-alert-triangle"></i> ${text.length-p.limit} chars over limit — edit to shorten</div>`:''}`;
+    list.appendChild(d);
+  });
+}
+function toggleEdit(id){
+  const pt=document.getElementById('pt-'+id),pe=document.getElementById('pe-'+id);
+  if(pe.style.display==='block'){S.generatedPosts[id]=pe.value;pt.innerHTML=esc(pe.value);pt.style.display='block';pe.style.display='none';}
+  else{pt.style.display='none';pe.style.display='block';pe.focus();}
+}
+function onEdit(id){
+  S.generatedPosts[id]=document.getElementById('pe-'+id).value;
+  const p=PLATS.find(x=>x.id===id);
+  const cc=document.getElementById('pe-'+id).closest('.post-card').querySelector('.char-ct');
+  if(cc&&p){const l=S.generatedPosts[id].length;cc.textContent=l+'/'+p.limit;cc.className='char-ct'+(l>p.limit?' char-over':'');}
+}
+function copyPost(id){
+  navigator.clipboard.writeText(S.generatedPosts[id]||'').then(()=>notif('Copied!')).catch(()=>notif('Select text manually'));
+}
+function copyAll(){
+  const all=Object.entries(S.generatedPosts).map(([k,v])=>`--- ${PLATS.find(x=>x.id===k)?.name||k} ---\n${v}`).join('\n\n');
+  navigator.clipboard.writeText(all).then(()=>notif('All captions copied!')).catch(()=>notif('Could not copy automatically'));
+}
+
+// ══════════════════════ BUFFER BUTTONS ══════════════════════
+function renderBhBtns(){
+  document.getElementById('bh-btns').innerHTML=Object.keys(S.generatedPosts).map(id=>{
+    const p=PLATS.find(x=>x.id===id);
+    return `<button class="bh-plat-btn" id="bhb-${id}" onclick="copyForBuffer('${id}')">${p?.icon||''} ${p?.name||id}</button>`;
+  }).join('');
+}
+function copyForBuffer(id){
+  const text=S.generatedPosts[id]||'';
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('bhb-'+id);
+    if(btn){btn.classList.add('copied');btn.textContent='✓ Copied!';}
+    notif('Caption copied! Opening Buffer...');
+    setTimeout(()=>{
+      window.open('https://buffer.com/app','_blank');
+      if(btn){const p=PLATS.find(x=>x.id===id);btn.classList.remove('copied');btn.textContent=(p?.icon||'')+' '+(p?.name||id);}
+    },800);
+  }).catch(()=>notif('Could not auto-copy — copy manually from the post above'));
+}
+
+// ══════════════════════ HASHTAGS ══════════════════════
+function genHashtags(){
+  const t=S.postType||'merch';
+  const tags=t==='merch'
+    ?['#art','#handmade','#originalart','#artforsale','#buyart','#artcollector','#supportsmallbusiness','#shopsmall','#artgallery','#framinghamma','#metrowest','#bostonart','#newenglandart','#shoplocal']
+    :['#artistlife','#artstudio','#behindthescenes','#artprocess','#creativelife','#artcommunity','#wip','#makersofinstagram','#framinghamma','#bostonartist','#metrowest','#createeveryday'];
+  const chips=document.getElementById('hashtag-chips');
+  if(chips) chips.innerHTML=tags.map(t=>`<span style="padding:2px 8px;background:var(--oglow);border:1px solid var(--border);border-radius:3px;font-size:10px;color:var(--orange2);cursor:pointer" onclick="addTag('${t}')">${t}</span>`).join('');
+}
+function addTag(t){const el=document.getElementById('custom-tags');if(el&&!el.value.includes(t)) el.value=(el.value+' '+t).trim();}
+
+// ══════════════════════ HISTORY ══════════════════════
+function saveHistory(){
+  try{S.history=JSON.parse(localStorage.getItem('dcbot_hist2')||'[]');}catch{S.history=[];}
+  S.history.unshift({id:Date.now(),type:S.postType,imgPreview:S.imgData?'data:image/jpeg;base64,'+S.imgData.substring(0,2000):null,posts:{...S.generatedPosts},price:S.priceResult,savedAt:new Date().toISOString()});
+  if(S.history.length>30) S.history=S.history.slice(0,30);
+  localStorage.setItem('dcbot_hist2',JSON.stringify(S.history));
+  notif('Saved to history!');
+}
+function renderHistory(){
+  try{S.history=JSON.parse(localStorage.getItem('dcbot_hist2')||'[]');}catch{S.history=[];}
+  const el=document.getElementById('history-list');
+  if(!S.history.length){el.innerHTML='<div style="text-align:center;padding:50px;color:var(--text3)"><i class="ti ti-history" style="font-size:40px;display:block;margin-bottom:12px"></i>No saved posts yet<br><span style="font-size:13px;margin-top:6px;display:block">Create a post and click "Save to History"</span></div>';return;}
+  el.innerHTML=S.history.map(h=>`
+    <div class="hist-item">
+      ${h.imgPreview?`<img src="${h.imgPreview}" class="hist-thumb" alt="">`:`<div class="hist-thumb-none">${h.type==='merch'?'🏷':'🙋'}</div>`}
+      <div style="flex:1">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px;flex-wrap:wrap">
+          <span style="padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;background:${h.type==='merch'?'var(--oglow)':'var(--gdim)'};color:${h.type==='merch'?'var(--orange2)':'#4ade80'};border:1px solid ${h.type==='merch'?'var(--border)':'rgba(34,197,94,0.25)'}">${h.type==='merch'?'🏷 Merch':'🙋 Personal'}</span>
+          <span style="font-size:11px;color:var(--text3)">${new Date(h.savedAt).toLocaleDateString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})}</span>
+          ${h.price?`<span style="font-size:11px;color:var(--orange)">💰 $${h.price.suggested_price} suggested</span>`:''}
+        </div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.4">${esc((Object.values(h.posts||{})[0]||'').substring(0,100))}...</div>
+        <div style="display:flex;gap:4px;margin-top:6px;flex-wrap:wrap">${Object.keys(h.posts||{}).map(p=>`<span style="padding:2px 7px;background:var(--oglow);border:1px solid var(--border);border-radius:3px;font-size:10px;color:var(--orange2)">${PLATS.find(x=>x.id===p)?.icon||''} ${PLATS.find(x=>x.id===p)?.name||p}</span>`).join('')}</div>
+      </div>
+    </div>`).join('');
+}
+
+// ══════════════════════ UTILS ══════════════════════
+function esc(t){return(t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');}
+let _nt;
+function notif(msg,err=false){
+  const n=document.getElementById('_notif');
+  n.textContent=msg;n.style.background=err?'#2a0a08':'#081a10';
+  n.style.border=`1px solid ${err?'rgba(220,80,40,0.5)':'rgba(34,197,94,0.4)'}`;
+  n.style.color=err?'#f07060':'#4ade80';n.style.opacity='1';
+  clearTimeout(_nt);_nt=setTimeout(()=>n.style.opacity='0',3200);
+}
+
+// ══════════════════════ INIT ══════════════════════
+document.addEventListener('DOMContentLoaded',()=>{
+  renderPlatToggles();
+  genHashtags();
+  updateGeminiStatus();
+  const keys=loadKeys();
+  if(!keys.gemini) setTimeout(()=>openModal(),500);
+  // drag and drop
+  const dz=document.getElementById('drop-zone');
+  dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('over');});
+  dz.addEventListener('dragleave',()=>dz.classList.remove('over'));
+  dz.addEventListener('drop',e=>{
+    e.preventDefault();dz.classList.remove('over');
+    const f=e.dataTransfer.files[0];
+    if(f&&f.type.startsWith('image/')){
+      const dt=new DataTransfer();dt.items.add(f);
+      document.getElementById('file-in').files=dt.files;
+      handleImg(document.getElementById('file-in'));
+    }
+  });
+});
+</script>
+</body>
+</html>
